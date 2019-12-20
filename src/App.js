@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
+
+import moment from 'moment';
+import { SingleDatePicker } from 'react-dates';
+
 import Clock from './Clock';
 import './App.css';
 
 class App extends Component {
   state = {
      deadline: "Jan 01, 2020",
-     newDeadLine: ""
+     newDeadLine: "",
+     calendarFocused: false
   }
 
   changeDeadline = () => {
     this.setState({
-      deadline: this.state.newDeadLine
+      deadline: moment(this.state.newDeadLine).format('MMM D, YYYY')
     })
   }
 
@@ -20,15 +25,21 @@ class App extends Component {
       <div className="App-title">Countdown to {this.state.deadline}</div>
         <Clock deadline={this.state.deadline}/>
           <div className="container">
-            <input 
-              className="input"
-              placeholder="Enter new date"
-              onChange={e => this.setState({ newDeadLine: e.target.value })}
+            <SingleDatePicker
+              displayFormat='DD/MM/YYYY'
+              date={!!this.state.newDeadLine ? moment(this.state.newDeadLine) : moment()}
+              onDateChange={date => this.setState({ newDeadLine: date })}
+              focused={this.state.calendarFocused}
+              onFocusChange={({ focused }) => this.setState(() => ({ calendarFocused: focused }))}
+              numberOfMonths={1}
+              isOutsideRange={() => false}
             />
             <button
               className="button" 
               onClick={() => this.changeDeadline()}
-            >Submit</button>
+            >
+              Submit
+            </button>
           </div>
       </div>
     );
